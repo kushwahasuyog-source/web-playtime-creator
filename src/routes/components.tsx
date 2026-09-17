@@ -2,7 +2,8 @@ import { createFileRoute } from "@tanstack/react-router";
 import { Zap } from "@untitledui/icons";
 
 import { Section, SectionHeading } from "@/components/landing/primitives";
-import { Footer, Nav } from "@/components/landing/Nav";
+import { Nav } from "@/components/landing/Nav";
+import { Footer } from "@/components/landing/Sections";
 import {
   DualCta,
   InlineCta,
