@@ -2,8 +2,8 @@ import { useEffect, useState } from "react";
 import {
   ArrowRight,
   ClockStopwatch,
-  Flame,
   RefreshCw01,
+  Sale01,
 } from "@untitledui/icons";
 import { ActionLink } from "@/components/landing/primitives";
 import { cn } from "@/lib/utils";
@@ -105,7 +105,7 @@ export function CountdownBanner({
       <div className="absolute inset-0 grid-lines opacity-30" aria-hidden />
       <div className="relative mx-auto max-w-3xl">
         <span className="inline-flex items-center gap-2 rounded-full border border-foreground/15 bg-background/25 px-3 py-1 font-mono text-[11px] font-semibold uppercase tracking-[0.14em]">
-          <Flame className="size-3.5" />
+          <Sale01 className="size-3.5" />
           {badge}
         </span>
         <h2 className="mt-5 font-display text-3xl font-semibold leading-tight md:text-4xl">
