@@ -19,22 +19,22 @@ import { ActionLink, Card, Section, SectionHeading, StatusDot } from "./primitiv
 
 const steps = [
   {
-    icon: MessageSquare,
+    icon: MessageChatCircle,
     title: "Describe it",
     body: "Write your bot idea in plain language. No specs, no boilerplate.",
   },
   {
-    icon: FileCode2,
+    icon: CodeSquare01,
     title: "AI builds it",
     body: "A multi-stage pipeline plans, codes, reviews and tests your bot.",
   },
   {
-    icon: KeyRound,
+    icon: Key01,
     title: "Connect BotFather",
     body: "Paste your token once. It is verified and stored encrypted.",
   },
   {
-    icon: Rocket,
+    icon: Rocket01,
     title: "Deploy & manage",
     body: "One click to go live, then monitor users, logs and events.",
   },
@@ -127,25 +127,25 @@ export function BuilderDemo() {
 /* ---------------- Features ---------------- */
 
 const features = [
-  { icon: Bot, title: "Bot management", body: "Start, stop, edit and version every bot you own." },
+  { icon: MessageSmileCircle, title: "Bot management", body: "Start, stop, edit and version every bot you own." },
   {
-    icon: Workflow,
+    icon: Dataflow03,
     title: "Visual automations",
     body: "Triggers, conditions and actions wired on a canvas.",
   },
   {
-    icon: BarChart3,
+    icon: BarChartSquare02,
     title: "Analytics",
     body: "Users, messages, commands and retention in real time.",
   },
   { icon: Activity, title: "Live logs", body: "Stream errors and events straight from the runtime." },
   {
-    icon: ShieldCheck,
+    icon: ShieldTick,
     title: "Secret vault",
     body: "Bot tokens encrypted and never exposed to the browser.",
   },
   {
-    icon: Blocks,
+    icon: Grid01,
     title: "Templates",
     body: "Start from 40+ ready-made bots across 12 categories.",
   },
@@ -413,7 +413,7 @@ export function Footer() {
         <div>
           <div className="flex items-center gap-2.5">
             <span className="flex size-8 items-center justify-center rounded-lg bg-primary text-primary-foreground">
-              <Bot className="size-4.5" />
+              <MessageSmileCircle className="size-4.5" />
             </span>
             <span className="font-display text-lg font-semibold">BotForge</span>
           </div>
