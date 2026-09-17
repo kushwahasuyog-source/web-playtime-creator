@@ -1,4 +1,4 @@
-import { Bot } from "lucide-react";
+import { MessageSmileCircle } from "@untitledui/icons";
 import { ActionLink } from "./primitives";
 
 const links = [
@@ -15,7 +15,7 @@ export function Nav() {
       <div className="mx-auto flex h-16 w-full max-w-6xl items-center justify-between px-6 md:px-10">
         <a href="#top" className="flex items-center gap-2.5">
           <span className="flex size-8 items-center justify-center rounded-lg bg-primary text-primary-foreground">
-            <Bot className="size-4.5" />
+            <MessageSmileCircle className="size-4.5" />
           </span>
           <span className="font-display text-lg font-semibold tracking-tight">BotForge</span>
         </a>

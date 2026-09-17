@@ -1,17 +1,18 @@
 import {
   Activity,
-  BarChart3,
-  Blocks,
-  Bot,
+  BarChartSquare02,
   Check,
-  FileCode2,
-  KeyRound,
-  MessageSquare,
-  Rocket,
-  ShieldCheck,
-  Workflow,
+  CodeSquare01,
+  Dataflow03,
+  Grid01,
+  Key01,
+  LayersThree01,
+  MessageChatCircle,
+  MessageSmileCircle,
+  Rocket01,
+  ShieldTick,
   Zap,
-} from "lucide-react";
+} from "@untitledui/icons";
 import { ActionLink, Card, Section, SectionHeading, StatusDot } from "./primitives";
 
 /* ---------------- How it works ---------------- */

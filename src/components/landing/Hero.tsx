@@ -1,4 +1,4 @@
-import { ArrowRight, Sparkles } from "lucide-react";
+import { ArrowRight, Stars02 } from "@untitledui/icons";
 import { ActionLink, Eyebrow, StatusDot } from "./primitives";
 
 const stats = [
@@ -16,7 +16,7 @@ export function Hero() {
         <div className="grid items-center gap-14 lg:grid-cols-[1.05fr_0.95fr]">
           <div className="animate-rise">
             <Eyebrow>
-              <Sparkles className="size-3.5" /> AI Telegram bot platform
+              <Stars02 className="size-3.5" /> AI Telegram bot platform
             </Eyebrow>
             <h1 className="mt-6 text-4xl font-semibold leading-[1.05] md:text-6xl">
               Build Telegram bots <span className="text-gradient">with AI</span>
