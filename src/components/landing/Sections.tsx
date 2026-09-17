@@ -6,7 +6,6 @@ import {
   Dataflow03,
   Grid01,
   Key01,
-  LayersThree01,
   MessageChatCircle,
   MessageSmileCircle,
   Rocket01,
