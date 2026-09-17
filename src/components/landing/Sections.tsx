@@ -299,9 +299,7 @@ export function Pricing() {
         {plans.map((p) => (
           <Card
             key={p.name}
-            className={
-              p.featured ? "border-accent/50 ring-soft" : undefined
-            }
+            className={p.featured ? "border-accent/50 ring-soft" : ""}
           >
             <div className="flex items-center justify-between">
               <h3 className="text-lg font-semibold">{p.name}</h3>
