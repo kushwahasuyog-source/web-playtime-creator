@@ -65,7 +65,9 @@ export const Route = createFileRoute("/api/public/telegram/webhook/$botId")({
         });
 
         let reply = "";
-        const commandName = text.startsWith("/") ? text.split(/\s+/)[0].toLowerCase() : null;
+        const commandName = text.startsWith("/")
+          ? (text.split(/\s+/)[0] ?? "").toLowerCase()
+          : null;
 
         if (commandName) {
           const { data: cmd } = await supabaseAdmin
