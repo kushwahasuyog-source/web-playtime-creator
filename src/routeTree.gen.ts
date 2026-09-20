@@ -10,13 +10,11 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
-import { Route as AuthRouteImport } from './routes/auth'
 import { Route as ComponentsRouteImport } from './routes/components'
-import { Route as AuthenticatedAppIndexRouteImport } from './routes/_authenticated/app/index'
-import { Route as AuthenticatedAppNewRouteImport } from './routes/_authenticated/app/new'
-import { Route as AuthenticatedAppTemplatesRouteImport } from './routes/_authenticated/app/templates'
-import { Route as AuthenticatedAppBotsBotIdRouteImport } from './routes/_authenticated/app/bots.$botId'
+import { Route as AppIndexRouteImport } from './routes/app/index'
+import { Route as AppNewRouteImport } from './routes/app/new'
+import { Route as AppTemplatesRouteImport } from './routes/app/templates'
+import { Route as AppBotsBotIdRouteImport } from './routes/app/bots.$botId'
 import { Route as ApiPublicTelegramWebhookBotIdRouteImport } from './routes/api/public/telegram/webhook/$botId'
 
 const IndexRoute = IndexRouteImport.update({
@@ -24,42 +22,31 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
-  id: '/_authenticated',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AuthRoute = AuthRouteImport.update({
-  id: '/auth',
-  path: '/auth',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const ComponentsRoute = ComponentsRouteImport.update({
   id: '/components',
   path: '/components',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AuthenticatedAppIndexRoute = AuthenticatedAppIndexRouteImport.update({
+const AppIndexRoute = AppIndexRouteImport.update({
   id: '/app/',
   path: '/app/',
-  getParentRoute: () => AuthenticatedRouteRoute,
+  getParentRoute: () => rootRouteImport,
 } as any)
-const AuthenticatedAppNewRoute = AuthenticatedAppNewRouteImport.update({
+const AppNewRoute = AppNewRouteImport.update({
   id: '/app/new',
   path: '/app/new',
-  getParentRoute: () => AuthenticatedRouteRoute,
+  getParentRoute: () => rootRouteImport,
 } as any)
-const AuthenticatedAppTemplatesRoute =
-  AuthenticatedAppTemplatesRouteImport.update({
-    id: '/app/templates',
-    path: '/app/templates',
-    getParentRoute: () => AuthenticatedRouteRoute,
-  } as any)
-const AuthenticatedAppBotsBotIdRoute =
-  AuthenticatedAppBotsBotIdRouteImport.update({
-    id: '/app/bots/$botId',
-    path: '/app/bots/$botId',
-    getParentRoute: () => AuthenticatedRouteRoute,
-  } as any)
+const AppTemplatesRoute = AppTemplatesRouteImport.update({
+  id: '/app/templates',
+  path: '/app/templates',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AppBotsBotIdRoute = AppBotsBotIdRouteImport.update({
+  id: '/app/bots/$botId',
+  path: '/app/bots/$botId',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiPublicTelegramWebhookBotIdRoute =
   ApiPublicTelegramWebhookBotIdRouteImport.update({
     id: '/api/public/telegram/webhook/$botId',
@@ -69,41 +56,36 @@ const ApiPublicTelegramWebhookBotIdRoute =
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/auth': typeof AuthRoute
   '/components': typeof ComponentsRoute
-  '/app/new': typeof AuthenticatedAppNewRoute
-  '/app/templates': typeof AuthenticatedAppTemplatesRoute
-  '/app/': typeof AuthenticatedAppIndexRoute
-  '/app/bots/$botId': typeof AuthenticatedAppBotsBotIdRoute
+  '/app/new': typeof AppNewRoute
+  '/app/templates': typeof AppTemplatesRoute
+  '/app/': typeof AppIndexRoute
+  '/app/bots/$botId': typeof AppBotsBotIdRoute
   '/api/public/telegram/webhook/$botId': typeof ApiPublicTelegramWebhookBotIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/auth': typeof AuthRoute
   '/components': typeof ComponentsRoute
-  '/app/new': typeof AuthenticatedAppNewRoute
-  '/app/templates': typeof AuthenticatedAppTemplatesRoute
-  '/app': typeof AuthenticatedAppIndexRoute
-  '/app/bots/$botId': typeof AuthenticatedAppBotsBotIdRoute
+  '/app/new': typeof AppNewRoute
+  '/app/templates': typeof AppTemplatesRoute
+  '/app': typeof AppIndexRoute
+  '/app/bots/$botId': typeof AppBotsBotIdRoute
   '/api/public/telegram/webhook/$botId': typeof ApiPublicTelegramWebhookBotIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
-  '/auth': typeof AuthRoute
   '/components': typeof ComponentsRoute
-  '/_authenticated/app/new': typeof AuthenticatedAppNewRoute
-  '/_authenticated/app/templates': typeof AuthenticatedAppTemplatesRoute
-  '/_authenticated/app/': typeof AuthenticatedAppIndexRoute
-  '/_authenticated/app/bots/$botId': typeof AuthenticatedAppBotsBotIdRoute
+  '/app/new': typeof AppNewRoute
+  '/app/templates': typeof AppTemplatesRoute
+  '/app/': typeof AppIndexRoute
+  '/app/bots/$botId': typeof AppBotsBotIdRoute
   '/api/public/telegram/webhook/$botId': typeof ApiPublicTelegramWebhookBotIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
-    | '/auth'
     | '/components'
     | '/app/new'
     | '/app/templates'
@@ -113,7 +95,6 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
-    | '/auth'
     | '/components'
     | '/app/new'
     | '/app/templates'
@@ -123,21 +104,21 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
-    | '/_authenticated'
-    | '/auth'
     | '/components'
-    | '/_authenticated/app/new'
-    | '/_authenticated/app/templates'
-    | '/_authenticated/app/'
-    | '/_authenticated/app/bots/$botId'
+    | '/app/new'
+    | '/app/templates'
+    | '/app/'
+    | '/app/bots/$botId'
     | '/api/public/telegram/webhook/$botId'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
-  AuthRoute: typeof AuthRoute
   ComponentsRoute: typeof ComponentsRoute
+  AppNewRoute: typeof AppNewRoute
+  AppTemplatesRoute: typeof AppTemplatesRoute
+  AppIndexRoute: typeof AppIndexRoute
+  AppBotsBotIdRoute: typeof AppBotsBotIdRoute
   ApiPublicTelegramWebhookBotIdRoute: typeof ApiPublicTelegramWebhookBotIdRoute
 }
 
@@ -150,20 +131,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/_authenticated': {
-      id: '/_authenticated'
-      path: ''
-      fullPath: '/'
-      preLoaderRoute: typeof AuthenticatedRouteRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/auth': {
-      id: '/auth'
-      path: '/auth'
-      fullPath: '/auth'
-      preLoaderRoute: typeof AuthRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/components': {
       id: '/components'
       path: '/components'
@@ -171,33 +138,33 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ComponentsRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/_authenticated/app/': {
-      id: '/_authenticated/app/'
+    '/app/': {
+      id: '/app/'
       path: '/app'
       fullPath: '/app/'
-      preLoaderRoute: typeof AuthenticatedAppIndexRouteImport
-      parentRoute: typeof AuthenticatedRouteRoute
+      preLoaderRoute: typeof AppIndexRouteImport
+      parentRoute: typeof rootRouteImport
     }
-    '/_authenticated/app/new': {
-      id: '/_authenticated/app/new'
+    '/app/new': {
+      id: '/app/new'
       path: '/app/new'
       fullPath: '/app/new'
-      preLoaderRoute: typeof AuthenticatedAppNewRouteImport
-      parentRoute: typeof AuthenticatedRouteRoute
+      preLoaderRoute: typeof AppNewRouteImport
+      parentRoute: typeof rootRouteImport
     }
-    '/_authenticated/app/templates': {
-      id: '/_authenticated/app/templates'
+    '/app/templates': {
+      id: '/app/templates'
       path: '/app/templates'
       fullPath: '/app/templates'
-      preLoaderRoute: typeof AuthenticatedAppTemplatesRouteImport
-      parentRoute: typeof AuthenticatedRouteRoute
+      preLoaderRoute: typeof AppTemplatesRouteImport
+      parentRoute: typeof rootRouteImport
     }
-    '/_authenticated/app/bots/$botId': {
-      id: '/_authenticated/app/bots/$botId'
+    '/app/bots/$botId': {
+      id: '/app/bots/$botId'
       path: '/app/bots/$botId'
       fullPath: '/app/bots/$botId'
-      preLoaderRoute: typeof AuthenticatedAppBotsBotIdRouteImport
-      parentRoute: typeof AuthenticatedRouteRoute
+      preLoaderRoute: typeof AppBotsBotIdRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/api/public/telegram/webhook/$botId': {
       id: '/api/public/telegram/webhook/$botId'
@@ -209,28 +176,13 @@ declare module '@tanstack/react-router' {
   }
 }
 
-interface AuthenticatedRouteRouteChildren {
-  AuthenticatedAppNewRoute: typeof AuthenticatedAppNewRoute
-  AuthenticatedAppTemplatesRoute: typeof AuthenticatedAppTemplatesRoute
-  AuthenticatedAppIndexRoute: typeof AuthenticatedAppIndexRoute
-  AuthenticatedAppBotsBotIdRoute: typeof AuthenticatedAppBotsBotIdRoute
-}
-
-const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
-  AuthenticatedAppNewRoute: AuthenticatedAppNewRoute,
-  AuthenticatedAppTemplatesRoute: AuthenticatedAppTemplatesRoute,
-  AuthenticatedAppIndexRoute: AuthenticatedAppIndexRoute,
-  AuthenticatedAppBotsBotIdRoute: AuthenticatedAppBotsBotIdRoute,
-}
-
-const AuthenticatedRouteRouteWithChildren =
-  AuthenticatedRouteRoute._addFileChildren(AuthenticatedRouteRouteChildren)
-
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
-  AuthRoute: AuthRoute,
   ComponentsRoute: ComponentsRoute,
+  AppNewRoute: AppNewRoute,
+  AppTemplatesRoute: AppTemplatesRoute,
+  AppIndexRoute: AppIndexRoute,
+  AppBotsBotIdRoute: AppBotsBotIdRoute,
   ApiPublicTelegramWebhookBotIdRoute: ApiPublicTelegramWebhookBotIdRoute,
 }
 export const routeTree = rootRouteImport
