@@ -26,7 +26,7 @@ export function Hero() {
               deploys it, and gives you one dashboard for commands, automations and logs.
             </p>
             <div className="mt-9 flex flex-wrap gap-3">
-              <ActionLink href="#cta">
+              <ActionLink href="/auth">
                 Create your bot <ArrowRight className="size-4" />
               </ActionLink>
               <ActionLink href="#templates" variant="ghost">
