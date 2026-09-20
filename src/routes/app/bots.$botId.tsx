@@ -5,10 +5,11 @@ import { ArrowLeft, Key01, MessageChatCircle, Zap } from "@untitledui/icons";
 import { useState } from "react";
 
 import { AppShell, StatusPill } from "@/components/app/AppShell";
-import { supabase } from "@/integrations/supabase/client";
-import { connectToken, setBotLive } from "@/lib/bots.functions";
+import { connectToken, getBot, setBotLive } from "@/lib/bots.functions";
+import { getDeviceId } from "@/lib/device";
 
-export const Route = createFileRoute("/_authenticated/app/bots/$botId")({
+export const Route = createFileRoute("/app/bots/$botId")({
+  ssr: false,
   head: () => ({
     meta: [
       { title: "Bot settings — BotForge" },
@@ -31,6 +32,7 @@ export const Route = createFileRoute("/_authenticated/app/bots/$botId")({
 function BotDetailPage() {
   const { botId } = Route.useParams();
   const queryClient = useQueryClient();
+  const fetchBot = useServerFn(getBot);
   const runConnect = useServerFn(connectToken);
   const runLive = useServerFn(setBotLive);
 
@@ -39,49 +41,12 @@ function BotDetailPage() {
 
   const botQuery = useQuery({
     queryKey: ["bot", botId],
-    queryFn: async () => {
-      const { data, error: queryError } = await supabase
-        .from("bots")
-        .select(
-          "id, name, status, prompt, spec, telegram_username, token_hint, created_at, last_activity_at",
-        )
-        .eq("id", botId)
-        .single();
-      if (queryError) throw queryError;
-      return data;
-    },
-  });
-
-  const commandsQuery = useQuery({
-    queryKey: ["bot-commands", botId],
-    queryFn: async () => {
-      const { data, error: queryError } = await supabase
-        .from("bot_commands")
-        .select("id, command, description, reply, use_ai")
-        .eq("bot_id", botId)
-        .order("position");
-      if (queryError) throw queryError;
-      return data;
-    },
-  });
-
-  const messagesQuery = useQuery({
-    queryKey: ["bot-messages", botId],
-    queryFn: async () => {
-      const { data, error: queryError } = await supabase
-        .from("bot_messages")
-        .select("id, direction, text, telegram_user, created_at")
-        .eq("bot_id", botId)
-        .order("created_at", { ascending: false })
-        .limit(25);
-      if (queryError) throw queryError;
-      return data;
-    },
+    queryFn: async () => fetchBot({ data: { deviceId: getDeviceId(), botId } }),
     refetchInterval: 8000,
   });
 
   const connectMutation = useMutation({
-    mutationFn: async () => runConnect({ data: { botId, token } }),
+    mutationFn: async () => runConnect({ data: { deviceId: getDeviceId(), botId, token } }),
     onSuccess: () => {
       setToken("");
       setError(null);
@@ -92,7 +57,7 @@ function BotDetailPage() {
   });
 
   const liveMutation = useMutation({
-    mutationFn: async (live: boolean) => runLive({ data: { botId, live } }),
+    mutationFn: async (live: boolean) => runLive({ data: { deviceId: getDeviceId(), botId, live } }),
     onSuccess: () => {
       setError(null);
       queryClient.invalidateQueries({ queryKey: ["bot", botId] });
@@ -101,7 +66,9 @@ function BotDetailPage() {
       setError(caught instanceof Error ? caught.message : "Could not change the bot status."),
   });
 
-  const bot = botQuery.data;
+  const bot = botQuery.data?.bot;
+  const commands = botQuery.data?.commands ?? [];
+  const messages = botQuery.data?.messages ?? [];
   const spec = (bot?.spec ?? {}) as {
     tagline?: string;
     persona?: string;
@@ -170,7 +137,7 @@ function BotDetailPage() {
                   Commands
                 </h2>
                 <div className="mt-4 space-y-3">
-                  {commandsQuery.data?.map((c) => (
+                  {commands.map((c) => (
                     <div key={c.id} className="rounded-xl border border-border bg-surface/60 p-4">
                       <div className="flex items-center justify-between gap-3">
                         <p className="font-mono text-sm text-accent">{c.command}</p>
@@ -188,7 +155,7 @@ function BotDetailPage() {
                       ) : null}
                     </div>
                   ))}
-                  {!commandsQuery.data?.length ? (
+                  {!commands.length ? (
                     <p className="text-sm text-muted-foreground">No commands generated.</p>
                   ) : null}
                 </div>
@@ -199,8 +166,8 @@ function BotDetailPage() {
                   <MessageChatCircle className="size-3.5" /> Recent messages
                 </h2>
                 <div className="mt-4 space-y-2">
-                  {messagesQuery.data?.length ? (
-                    messagesQuery.data.map((m) => (
+                  {messages.length ? (
+                    messages.map((m) => (
                       <div
                         key={m.id}
                         className="rounded-lg border border-border bg-background/50 px-3 py-2 text-sm"
