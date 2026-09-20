@@ -5,8 +5,8 @@ import { Check, Stars02 } from "@untitledui/icons";
 import { useEffect, useState } from "react";
 
 import { AppShell, PageHeading } from "@/components/app/AppShell";
-import { supabase } from "@/integrations/supabase/client";
-import { generateBot } from "@/lib/bots.functions";
+import { generateBot, listTemplates } from "@/lib/bots.functions";
+import { getDeviceId } from "@/lib/device";
 
 const stages = [
   "Requirement parser",
@@ -17,7 +17,8 @@ const stages = [
   "Safety review",
 ];
 
-export const Route = createFileRoute("/_authenticated/app/new")({
+export const Route = createFileRoute("/app/new")({
+  ssr: false,
   validateSearch: (search: Record<string, unknown>) => ({
     template: typeof search["template"] === "string" ? (search["template"] as string) : undefined,
   }),
@@ -42,8 +43,9 @@ export const Route = createFileRoute("/_authenticated/app/new")({
 
 function NewBotPage() {
   const navigate = useNavigate();
-  const search = useSearch({ from: "/_authenticated/app/new" });
+  const search = useSearch({ from: "/app/new" });
   const run = useServerFn(generateBot);
+  const fetchTemplates = useServerFn(listTemplates);
 
   const [prompt, setPrompt] = useState("");
   const [busy, setBusy] = useState(false);
@@ -52,14 +54,7 @@ function NewBotPage() {
 
   const { data: templates } = useQuery({
     queryKey: ["templates"],
-    queryFn: async () => {
-      const { data, error: queryError } = await supabase
-        .from("templates")
-        .select("slug, name, category, starter_prompt")
-        .order("name");
-      if (queryError) throw queryError;
-      return data;
-    },
+    queryFn: async () => fetchTemplates({}),
   });
 
   useEffect(() => {
@@ -80,7 +75,11 @@ function NewBotPage() {
     setError(null);
     try {
       const result = await run({
-        data: { prompt, ...(search.template ? { templateSlug: search.template } : {}) },
+        data: {
+          deviceId: getDeviceId(),
+          prompt,
+          ...(search.template ? { templateSlug: search.template } : {}),
+        },
       });
       navigate({ to: "/app/bots/$botId", params: { botId: result.botId } });
     } catch (caught) {

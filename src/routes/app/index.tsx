@@ -1,11 +1,14 @@
 import { useQuery } from "@tanstack/react-query";
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { useServerFn } from "@tanstack/react-start";
 import { ArrowRight, MessageChatCircle, Plus } from "@untitledui/icons";
 
 import { AppShell, PageHeading, StatusPill } from "@/components/app/AppShell";
-import { supabase } from "@/integrations/supabase/client";
+import { listBots } from "@/lib/bots.functions";
+import { getDeviceId } from "@/lib/device";
 
-export const Route = createFileRoute("/_authenticated/app/")({
+export const Route = createFileRoute("/app/")({
+  ssr: false,
   head: () => ({
     meta: [
       { title: "My bots — BotForge" },
@@ -23,16 +26,10 @@ export const Route = createFileRoute("/_authenticated/app/")({
 });
 
 function BotsPage() {
+  const run = useServerFn(listBots);
   const { data: bots, isLoading } = useQuery({
     queryKey: ["bots"],
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from("bots")
-        .select("id, name, status, telegram_username, spec, created_at, last_activity_at")
-        .order("created_at", { ascending: false });
-      if (error) throw error;
-      return data;
-    },
+    queryFn: async () => run({ data: { deviceId: getDeviceId() } }),
   });
 
   return (

@@ -1,11 +1,12 @@
 import { useQuery } from "@tanstack/react-query";
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { useServerFn } from "@tanstack/react-start";
 import { Zap } from "@untitledui/icons";
 
 import { AppShell, PageHeading } from "@/components/app/AppShell";
-import { supabase } from "@/integrations/supabase/client";
+import { listTemplates } from "@/lib/bots.functions";
 
-export const Route = createFileRoute("/_authenticated/app/templates")({
+export const Route = createFileRoute("/app/templates")({
   head: () => ({
     meta: [
       { title: "Bot templates — BotForge" },
@@ -26,16 +27,10 @@ export const Route = createFileRoute("/_authenticated/app/templates")({
 });
 
 function TemplatesPage() {
+  const fetchTemplates = useServerFn(listTemplates);
   const { data: templates, isLoading } = useQuery({
     queryKey: ["templates"],
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from("templates")
-        .select("slug, name, category, description, starter_prompt")
-        .order("name");
-      if (error) throw error;
-      return data;
-    },
+    queryFn: async () => fetchTemplates({}),
   });
 
   return (
