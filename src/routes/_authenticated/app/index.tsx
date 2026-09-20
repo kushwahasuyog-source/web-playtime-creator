@@ -44,6 +44,7 @@ function BotsPage() {
         action={
           <Link
             to="/app/new"
+            search={{ template: undefined }}
             className="inline-flex items-center gap-2 rounded-xl bg-accent px-5 py-3 text-sm font-semibold text-accent-foreground ring-soft transition-all hover:brightness-110"
           >
             <Plus className="size-4" /> New bot
@@ -63,6 +64,7 @@ function BotsPage() {
           </p>
           <Link
             to="/app/new"
+            search={{ template: undefined }}
             className="mt-7 inline-flex items-center gap-2 rounded-xl bg-accent px-5 py-3 text-sm font-semibold text-accent-foreground ring-soft"
           >
             Build your first bot <ArrowRight className="size-4" />

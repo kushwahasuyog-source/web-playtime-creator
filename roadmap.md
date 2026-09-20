@@ -1,6 +1,28 @@
-# Roadmap
+# BotForge roadmap
 
-- [x] CTA block components: SingleCta, DualCta, InlineCta, trust/social-proof elements
-- [x] Countdown timer components: large flip-clock, compact inline, reset, real-time
-- [x] Floating lead generation bar: collapsed teaser, expandable form, dismiss, backdrop blur
-- [x] Showcase route (/components) displaying all new components
+## Done — marketing site
+
+- [x] Landing page (hero, how it works, pipeline, features, templates, automations, pricing, FAQ, footer)
+- [x] CTA blocks (single, dual, inline, trust indicators, stats)
+- [x] Countdown timers (flip-clock banner + compact)
+- [x] Floating lead capture bar
+- [x] /components showcase page
+
+## Done — phase 1: accounts, AI bot builder, live Telegram bots
+
+- [x] Accounts (email + password sign-up / sign-in) at /auth
+- [x] Database: profiles, bots, bot_commands, bot_messages, templates (8 seeded) with owner-only access
+- [x] Bots dashboard at /app
+- [x] AI builder at /app/new — prompt → generated name, persona, commands, replies
+- [x] Bot page at /app/bots/:id — commands, behaviour, token connection, go live, recent messages
+- [x] Templates at /app/templates — fork into the builder
+- [x] Telegram webhook per bot with verified secret, command replies + AI fallback
+- [x] BotFather tokens verified and stored encrypted
+
+## Next phases
+
+- [ ] Bot Directory (public listing of published bots)
+- [ ] Workflow Builder (triggers, conditions, actions)
+- [ ] Bot Analytics (users, messages, retention charts)
+- [ ] Bot Hosting (beyond on/off: logs, restarts, usage limits)
+- [ ] AI Coding Assistant (edit generated bot code in-app)

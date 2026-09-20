@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { timingSafeEqual } from "node:crypto";
 
-function safeEqual(a: string, b: string) {
+async function safeEqual(a: string, b: string) {
+  const { timingSafeEqual } = await import("node:crypto");
   const left = Buffer.from(a);
   const right = Buffer.from(b);
   return left.length === right.length && timingSafeEqual(left, right);
