@@ -37,7 +37,7 @@ export function Nav() {
             href="/app"
             className="hidden text-sm text-muted-foreground transition-colors hover:text-foreground sm:block"
           >
-            Log in
+            My bots
           </a>
           <ActionLink href="/app" className="px-4 py-2">
             Create your bot
