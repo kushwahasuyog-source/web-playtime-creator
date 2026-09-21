@@ -1,5 +1,5 @@
 import { Link } from "@tanstack/react-router";
-import { Grid01, MessageSmileCircle, Plus } from "@untitledui/icons";
+import { Code02, Grid01, MessageSmileCircle, Plus } from "@untitledui/icons";
 import type { ReactNode } from "react";
 
 import { cn } from "@/lib/utils";
@@ -8,6 +8,7 @@ const nav = [
   { to: "/app", label: "My bots", icon: MessageSmileCircle },
   { to: "/app/new", label: "AI builder", icon: Plus },
   { to: "/app/templates", label: "Templates", icon: Grid01 },
+  { to: "/app/assistant", label: "Coding assistant", icon: Code02 },
 ] as const;
 
 export function AppShell({ children }: { children: ReactNode }) {
