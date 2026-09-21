@@ -38,16 +38,13 @@ export function AppShell({ children }: { children: ReactNode }) {
             ))}
           </nav>
 
-          <button
-            type="button"
-            onClick={async () => {
-              await supabase.auth.signOut();
-              navigate({ to: "/auth" });
-            }}
+          <Link
+            to="/app/new"
+            search={{ template: undefined }}
             className="inline-flex items-center gap-2 rounded-xl border border-border bg-surface px-4 py-2 text-sm text-muted-foreground transition-colors hover:border-accent/50 hover:text-accent"
           >
-            <LogOut01 className="size-4" /> Sign out
-          </button>
+            <Plus className="size-4" /> New bot
+          </Link>
         </div>
       </header>
 
