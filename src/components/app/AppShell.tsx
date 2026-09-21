@@ -1,8 +1,7 @@
-import { Link, useNavigate } from "@tanstack/react-router";
-import { Grid01, LogOut01, MessageSmileCircle, Plus } from "@untitledui/icons";
+import { Link } from "@tanstack/react-router";
+import { Grid01, MessageSmileCircle, Plus } from "@untitledui/icons";
 import type { ReactNode } from "react";
 
-import { supabase } from "@/integrations/supabase/client";
 import { cn } from "@/lib/utils";
 
 const nav = [
