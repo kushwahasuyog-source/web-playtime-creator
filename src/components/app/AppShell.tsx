@@ -1,8 +1,7 @@
-import { Link, useNavigate } from "@tanstack/react-router";
-import { Grid01, LogOut01, MessageSmileCircle, Plus } from "@untitledui/icons";
+import { Link } from "@tanstack/react-router";
+import { Grid01, MessageSmileCircle, Plus } from "@untitledui/icons";
 import type { ReactNode } from "react";
 
-import { supabase } from "@/integrations/supabase/client";
 import { cn } from "@/lib/utils";
 
 const nav = [
@@ -12,8 +11,6 @@ const nav = [
 ] as const;
 
 export function AppShell({ children }: { children: ReactNode }) {
-  const navigate = useNavigate();
-
   return (
     <div className="min-h-screen bg-background">
       <header className="sticky top-0 z-50 border-b border-border bg-background/80 backdrop-blur-xl">
@@ -38,16 +35,13 @@ export function AppShell({ children }: { children: ReactNode }) {
             ))}
           </nav>
 
-          <button
-            type="button"
-            onClick={async () => {
-              await supabase.auth.signOut();
-              navigate({ to: "/auth" });
-            }}
+          <Link
+            to="/app/new"
+            search={{ template: undefined }}
             className="inline-flex items-center gap-2 rounded-xl border border-border bg-surface px-4 py-2 text-sm text-muted-foreground transition-colors hover:border-accent/50 hover:text-accent"
           >
-            <LogOut01 className="size-4" /> Sign out
-          </button>
+            <Plus className="size-4" /> New bot
+          </Link>
         </div>
       </header>
 

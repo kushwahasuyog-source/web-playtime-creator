@@ -34,12 +34,12 @@ export function Nav() {
 
         <div className="flex items-center gap-3">
           <a
-            href="/auth"
+            href="/app"
             className="hidden text-sm text-muted-foreground transition-colors hover:text-foreground sm:block"
           >
-            Log in
+            My bots
           </a>
-          <ActionLink href="/auth" className="px-4 py-2">
+          <ActionLink href="/app" className="px-4 py-2">
             Create your bot
           </ActionLink>
         </div>
