@@ -323,7 +323,7 @@ export function Pricing() {
               ))}
             </ul>
             <ActionLink
-              href="/auth"
+              href="/app"
               variant={p.featured ? "primary" : "ghost"}
               className="mt-7 w-full"
             >
@@ -388,7 +388,7 @@ export function Cta() {
             Describe it, connect BotFather, deploy. Free to start.
           </p>
           <div className="mt-9 flex flex-wrap justify-center gap-3">
-            <ActionLink href="/auth">Create your bot</ActionLink>
+            <ActionLink href="/app">Create your bot</ActionLink>
             <ActionLink href="#templates" variant="ghost">
               Explore templates
             </ActionLink>
