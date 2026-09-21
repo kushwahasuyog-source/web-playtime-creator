@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ComponentsRouteImport } from './routes/components'
+import { Route as ApiAssistantRouteImport } from './routes/api/assistant'
 import { Route as AppIndexRouteImport } from './routes/app/index'
 import { Route as AppNewRouteImport } from './routes/app/new'
 import { Route as AppTemplatesRouteImport } from './routes/app/templates'
@@ -25,6 +26,11 @@ const IndexRoute = IndexRouteImport.update({
 const ComponentsRoute = ComponentsRouteImport.update({
   id: '/components',
   path: '/components',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiAssistantRoute = ApiAssistantRouteImport.update({
+  id: '/api/assistant',
+  path: '/api/assistant',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AppIndexRoute = AppIndexRouteImport.update({
@@ -57,6 +63,7 @@ const ApiPublicTelegramWebhookBotIdRoute =
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/components': typeof ComponentsRoute
+  '/api/assistant': typeof ApiAssistantRoute
   '/app/new': typeof AppNewRoute
   '/app/templates': typeof AppTemplatesRoute
   '/app/': typeof AppIndexRoute
@@ -66,6 +73,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/components': typeof ComponentsRoute
+  '/api/assistant': typeof ApiAssistantRoute
   '/app/new': typeof AppNewRoute
   '/app/templates': typeof AppTemplatesRoute
   '/app': typeof AppIndexRoute
@@ -76,6 +84,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/components': typeof ComponentsRoute
+  '/api/assistant': typeof ApiAssistantRoute
   '/app/new': typeof AppNewRoute
   '/app/templates': typeof AppTemplatesRoute
   '/app/': typeof AppIndexRoute
@@ -87,6 +96,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/components'
+    | '/api/assistant'
     | '/app/new'
     | '/app/templates'
     | '/app/'
@@ -96,6 +106,7 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/components'
+    | '/api/assistant'
     | '/app/new'
     | '/app/templates'
     | '/app'
@@ -105,6 +116,7 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/components'
+    | '/api/assistant'
     | '/app/new'
     | '/app/templates'
     | '/app/'
@@ -115,6 +127,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   ComponentsRoute: typeof ComponentsRoute
+  ApiAssistantRoute: typeof ApiAssistantRoute
   AppNewRoute: typeof AppNewRoute
   AppTemplatesRoute: typeof AppTemplatesRoute
   AppIndexRoute: typeof AppIndexRoute
@@ -136,6 +149,13 @@ declare module '@tanstack/react-router' {
       path: '/components'
       fullPath: '/components'
       preLoaderRoute: typeof ComponentsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/assistant': {
+      id: '/api/assistant'
+      path: '/api/assistant'
+      fullPath: '/api/assistant'
+      preLoaderRoute: typeof ApiAssistantRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/app/': {
@@ -179,6 +199,7 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   ComponentsRoute: ComponentsRoute,
+  ApiAssistantRoute: ApiAssistantRoute,
   AppNewRoute: AppNewRoute,
   AppTemplatesRoute: AppTemplatesRoute,
   AppIndexRoute: AppIndexRoute,
