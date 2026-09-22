@@ -55,11 +55,46 @@ export const Route = createFileRoute("/app/assistant")({
 
 function AssistantPage() {
   const [input, setInput] = useState("");
+  const navigate = useNavigate();
+  const store = useServerFn(saveTemplate);
+  const [savingId, setSavingId] = useState<string | null>(null);
+  const [templateName, setTemplateName] = useState("");
+  const [savedId, setSavedId] = useState<string | null>(null);
+  const [saveError, setSaveError] = useState<string | null>(null);
   const { messages, sendMessage, status, stop, error } = useChat({
     transport: new DefaultChatTransport({ api: "/api/assistant" }),
   });
 
   const busy = status === "submitted" || status === "streaming";
+
+  function textOf(message: (typeof messages)[number]) {
+    return message.parts
+      .filter((p): p is { type: "text"; text: string } => p.type === "text")
+      .map((p) => p.text)
+      .join("\n\n")
+      .trim();
+  }
+
+  function buildFrom(message: (typeof messages)[number]) {
+    setHandoff(textOf(message));
+    void navigate({ to: "/app/new" });
+  }
+
+  async function saveAsTemplate(message: (typeof messages)[number]) {
+    setSaveError(null);
+    try {
+      await store({
+        data: { name: templateName.trim(), starterPrompt: textOf(message) },
+      });
+      setSavedId(message.id);
+      setSavingId(null);
+      setTemplateName("");
+    } catch (caught) {
+      setSaveError(
+        caught instanceof Error ? caught.message : "Could not save that as a template.",
+      );
+    }
+  }
 
   function send(text: string) {
     const trimmed = text.trim();
