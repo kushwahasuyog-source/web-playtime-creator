@@ -1,8 +1,12 @@
 import { useChat } from "@ai-sdk/react";
-import { createFileRoute } from "@tanstack/react-router";
-import { Code02 } from "@untitledui/icons";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { useServerFn } from "@tanstack/react-start";
+import { Check, Code02, Save01, Stars02 } from "@untitledui/icons";
 import { DefaultChatTransport } from "ai";
 import { useState } from "react";
+
+import { saveTemplate } from "@/lib/bots.functions";
+import { setHandoff } from "@/lib/handoff";
 
 import assistantMark from "@/assets/assistant-mark.png";
 import { AppShell, PageHeading } from "@/components/app/AppShell";
