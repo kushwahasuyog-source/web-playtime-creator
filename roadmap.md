@@ -25,4 +25,4 @@
 - [ ] Workflow Builder (triggers, conditions, actions)
 - [ ] Bot Analytics (users, messages, retention charts)
 - [ ] Bot Hosting (beyond on/off: logs, restarts, usage limits)
-- [ ] AI Coding Assistant (edit generated bot code in-app)
+- [x] AI Coding Assistant at /app/assistant — streaming chat that writes and debugs Telegram bot code
