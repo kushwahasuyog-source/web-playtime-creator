@@ -7,6 +7,7 @@ import { useEffect, useState } from "react";
 import { AppShell, PageHeading } from "@/components/app/AppShell";
 import { generateBot, listTemplates } from "@/lib/bots.functions";
 import { getDeviceId } from "@/lib/device";
+import { takeHandoff } from "@/lib/handoff";
 
 const stages = [
   "Requirement parser",
@@ -48,6 +49,7 @@ function NewBotPage() {
   const fetchTemplates = useServerFn(listTemplates);
 
   const [prompt, setPrompt] = useState("");
+  const [fromAssistant, setFromAssistant] = useState(false);
   const [busy, setBusy] = useState(false);
   const [stage, setStage] = useState(0);
   const [error, setError] = useState<string | null>(null);
@@ -56,6 +58,14 @@ function NewBotPage() {
     queryKey: ["templates"],
     queryFn: async () => fetchTemplates({}),
   });
+
+  useEffect(() => {
+    const handoff = takeHandoff();
+    if (handoff) {
+      setPrompt(handoff);
+      setFromAssistant(true);
+    }
+  }, []);
 
   useEffect(() => {
     if (!search.template || !templates) return;
@@ -100,6 +110,11 @@ function NewBotPage() {
 
       <div className="mt-10 grid gap-6 lg:grid-cols-[1.15fr_0.85fr]">
         <div className="rounded-3xl border border-border bg-panel p-6">
+          {fromAssistant ? (
+            <p className="mb-3 rounded-xl border border-accent/40 bg-accent/10 px-3 py-2 font-mono text-xs text-accent">
+              Brought over from the coding assistant — edit anything before building.
+            </p>
+          ) : null}
           <textarea
             value={prompt}
             onChange={(e) => setPrompt(e.target.value)}

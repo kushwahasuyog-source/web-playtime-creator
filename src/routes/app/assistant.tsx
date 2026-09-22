@@ -1,8 +1,12 @@
 import { useChat } from "@ai-sdk/react";
-import { createFileRoute } from "@tanstack/react-router";
-import { Code02 } from "@untitledui/icons";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { useServerFn } from "@tanstack/react-start";
+import { Check, Code02, Save01, Stars02 } from "@untitledui/icons";
 import { DefaultChatTransport } from "ai";
 import { useState } from "react";
+
+import { saveTemplate } from "@/lib/bots.functions";
+import { setHandoff } from "@/lib/handoff";
 
 import assistantMark from "@/assets/assistant-mark.png";
 import { AppShell, PageHeading } from "@/components/app/AppShell";
@@ -51,11 +55,46 @@ export const Route = createFileRoute("/app/assistant")({
 
 function AssistantPage() {
   const [input, setInput] = useState("");
+  const navigate = useNavigate();
+  const store = useServerFn(saveTemplate);
+  const [savingId, setSavingId] = useState<string | null>(null);
+  const [templateName, setTemplateName] = useState("");
+  const [savedId, setSavedId] = useState<string | null>(null);
+  const [saveError, setSaveError] = useState<string | null>(null);
   const { messages, sendMessage, status, stop, error } = useChat({
     transport: new DefaultChatTransport({ api: "/api/assistant" }),
   });
 
   const busy = status === "submitted" || status === "streaming";
+
+  function textOf(message: (typeof messages)[number]) {
+    return message.parts
+      .filter((p): p is { type: "text"; text: string } => p.type === "text")
+      .map((p) => p.text)
+      .join("\n\n")
+      .trim();
+  }
+
+  function buildFrom(message: (typeof messages)[number]) {
+    setHandoff(textOf(message));
+    void navigate({ to: "/app/new", search: { template: undefined } });
+  }
+
+  async function saveAsTemplate(message: (typeof messages)[number]) {
+    setSaveError(null);
+    try {
+      await store({
+        data: { name: templateName.trim(), starterPrompt: textOf(message) },
+      });
+      setSavedId(message.id);
+      setSavingId(null);
+      setTemplateName("");
+    } catch (caught) {
+      setSaveError(
+        caught instanceof Error ? caught.message : "Could not save that as a template.",
+      );
+    }
+  }
 
   function send(text: string) {
     const trimmed = text.trim();
@@ -116,6 +155,58 @@ function AssistantPage() {
                       ) : null,
                     )}
                   </MessageContent>
+                  {message.role === "assistant" && !busy && textOf(message) ? (
+                    <div className="mt-3 space-y-2">
+                      <div className="flex flex-wrap items-center gap-2">
+                        <button
+                          type="button"
+                          onClick={() => buildFrom(message)}
+                          className="inline-flex items-center gap-2 rounded-lg bg-accent px-3 py-1.5 text-xs font-semibold text-accent-foreground transition-all hover:brightness-110"
+                        >
+                          <Stars02 className="size-3.5" /> Build this bot
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setSavedId(null);
+                            setSaveError(null);
+                            setSavingId(savingId === message.id ? null : message.id);
+                          }}
+                          className="inline-flex items-center gap-2 rounded-lg border border-border bg-surface px-3 py-1.5 text-xs font-medium text-muted-foreground transition-colors hover:border-accent/50 hover:text-accent"
+                        >
+                          <Save01 className="size-3.5" /> Save as template
+                        </button>
+                        {savedId === message.id ? (
+                          <span className="inline-flex items-center gap-1.5 font-mono text-xs text-accent">
+                            <Check className="size-3.5" /> Saved to templates
+                          </span>
+                        ) : null}
+                      </div>
+
+                      {savingId === message.id ? (
+                        <div className="flex flex-wrap items-center gap-2">
+                          <input
+                            value={templateName}
+                            onChange={(e) => setTemplateName(e.target.value)}
+                            placeholder="Template name, e.g. Pizza order bot"
+                            className="w-64 rounded-lg border border-input bg-surface px-3 py-1.5 text-xs outline-none focus:border-accent"
+                          />
+                          <button
+                            type="button"
+                            disabled={templateName.trim().length < 2}
+                            onClick={() => void saveAsTemplate(message)}
+                            className="rounded-lg bg-accent px-3 py-1.5 text-xs font-semibold text-accent-foreground disabled:opacity-50"
+                          >
+                            Save
+                          </button>
+                        </div>
+                      ) : null}
+
+                      {saveError && savingId === message.id ? (
+                        <p className="text-xs text-urgent">{saveError}</p>
+                      ) : null}
+                    </div>
+                  ) : null}
                 </Message>
               ))}
 
