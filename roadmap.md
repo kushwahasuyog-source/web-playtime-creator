@@ -26,3 +26,5 @@
 - [ ] Bot Analytics (users, messages, retention charts)
 - [ ] Bot Hosting (beyond on/off: logs, restarts, usage limits)
 - [x] AI Coding Assistant at /app/assistant — streaming chat that writes and debugs Telegram bot code
+- [x] Assistant → builder / templates handoff (build this bot, save as template)
+- [ ] End-to-end Telegram walkthrough verified with a real BotFather token (needs the user's token)

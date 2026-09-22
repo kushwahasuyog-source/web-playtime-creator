@@ -77,13 +77,50 @@ export const listTemplates = createServerFn({ method: "GET" }).handler(async () 
   return data ?? [];
 });
 
+/** Save assistant output as a reusable template that shows up on the templates page. */
+export const saveTemplate = createServerFn({ method: "POST" })
+  .inputValidator((input: unknown) =>
+    z
+      .object({
+        name: z.string().min(2).max(80),
+        starterPrompt: z.string().min(10).max(12000),
+        category: z.string().min(2).max(40).optional(),
+      })
+      .parse(input),
+  )
+  .handler(async ({ data }) => {
+    const db = await admin();
+    const base =
+      data.name
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, "-")
+        .replace(/^-|-$/g, "")
+        .slice(0, 40) || "assistant-bot";
+    const slug = `${base}-${Math.random().toString(36).slice(2, 6)}`;
+    const firstLine =
+      data.starterPrompt
+        .split("\n")
+        .map((l) => l.trim())
+        .find((l) => l && !l.startsWith("```") && !l.startsWith("#")) ?? data.starterPrompt;
+
+    const { error } = await db.from("templates").insert({
+      slug,
+      name: data.name.trim(),
+      category: data.category?.trim() || "From assistant",
+      description: firstLine.slice(0, 220),
+      starter_prompt: data.starterPrompt,
+    });
+    if (error) throw new Error(error.message);
+    return { slug };
+  });
+
 /** Generate a bot specification from a plain-language description. */
 export const generateBot = createServerFn({ method: "POST" })
   .inputValidator((input: unknown) =>
     z
       .object({
         deviceId,
-        prompt: z.string().min(10).max(2000),
+        prompt: z.string().min(10).max(12000),
         templateSlug: z.string().optional(),
       })
       .parse(input),
