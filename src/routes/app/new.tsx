@@ -7,6 +7,7 @@ import { useEffect, useState } from "react";
 import { AppShell, PageHeading } from "@/components/app/AppShell";
 import { generateBot, listTemplates } from "@/lib/bots.functions";
 import { getDeviceId } from "@/lib/device";
+import { takeHandoff } from "@/lib/handoff";
 
 const stages = [
   "Requirement parser",
@@ -48,6 +49,7 @@ function NewBotPage() {
   const fetchTemplates = useServerFn(listTemplates);
 
   const [prompt, setPrompt] = useState("");
+  const [fromAssistant, setFromAssistant] = useState(false);
   const [busy, setBusy] = useState(false);
   const [stage, setStage] = useState(0);
   const [error, setError] = useState<string | null>(null);
@@ -56,6 +58,14 @@ function NewBotPage() {
     queryKey: ["templates"],
     queryFn: async () => fetchTemplates({}),
   });
+
+  useEffect(() => {
+    const handoff = takeHandoff();
+    if (handoff) {
+      setPrompt(handoff);
+      setFromAssistant(true);
+    }
+  }, []);
 
   useEffect(() => {
     if (!search.template || !templates) return;
