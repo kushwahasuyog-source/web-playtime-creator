@@ -77,7 +77,7 @@ function AssistantPage() {
 
   function buildFrom(message: (typeof messages)[number]) {
     setHandoff(textOf(message));
-    void navigate({ to: "/app/new" });
+    void navigate({ to: "/app/new", search: { template: undefined } });
   }
 
   async function saveAsTemplate(message: (typeof messages)[number]) {
