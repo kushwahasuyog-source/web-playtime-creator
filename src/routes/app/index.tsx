@@ -19,6 +19,7 @@ export const Route = createFileRoute("/app/")({
         content: "Every Telegram bot you have built, with live status.",
       },
       { property: "og:type", content: "website" },
+      { name: "robots", content: "noindex, nofollow" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
   }),

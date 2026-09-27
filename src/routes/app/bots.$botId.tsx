@@ -23,6 +23,7 @@ export const Route = createFileRoute("/app/bots/$botId")({
         content: "Review generated commands, connect Telegram and switch your bot live.",
       },
       { property: "og:type", content: "website" },
+      { name: "robots", content: "noindex, nofollow" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
@@ -57,7 +58,8 @@ function BotDetailPage() {
   });
 
   const liveMutation = useMutation({
-    mutationFn: async (live: boolean) => runLive({ data: { deviceId: getDeviceId(), botId, live } }),
+    mutationFn: async (live: boolean) =>
+      runLive({ data: { deviceId: getDeviceId(), botId, live } }),
     onSuccess: () => {
       setError(null);
       queryClient.invalidateQueries({ queryKey: ["bot", botId] });

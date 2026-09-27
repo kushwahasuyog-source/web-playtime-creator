@@ -20,6 +20,7 @@ export const Route = createFileRoute("/app/templates")({
         content: "Fork a proven Telegram bot template and customise it in the AI builder.",
       },
       { property: "og:type", content: "website" },
+      { name: "robots", content: "noindex, nofollow" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
   }),

@@ -12,7 +12,34 @@ import { useEffect, type ReactNode } from "react";
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 
+function useNoindexTitle(title: string) {
+  useEffect(() => {
+    const prevTitle = document.title;
+    document.title = title;
+
+    let meta = document.querySelector('meta[name="robots"]');
+    const hadMeta = Boolean(meta);
+    const prevContent = meta?.getAttribute("content") ?? null;
+    if (!meta) {
+      meta = document.createElement("meta");
+      meta.setAttribute("name", "robots");
+      document.head.appendChild(meta);
+    }
+    meta.setAttribute("content", "noindex, nofollow");
+
+    return () => {
+      document.title = prevTitle;
+      if (!hadMeta) {
+        meta?.remove();
+      } else if (prevContent !== null) {
+        meta?.setAttribute("content", prevContent);
+      }
+    };
+  }, [title]);
+}
+
 function NotFoundComponent() {
+  useNoindexTitle("Page not found — BotForge");
   return (
     <div className="flex min-h-screen items-center justify-center bg-background px-4">
       <div className="max-w-md text-center">
@@ -37,6 +64,7 @@ function NotFoundComponent() {
 function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
   console.error(error);
   const router = useRouter();
+  useNoindexTitle("This page didn't load — BotForge");
   useEffect(() => {
     reportLovableError(error, { boundary: "tanstack_root_error_component" });
   }, [error]);
@@ -77,20 +105,37 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Lovable App" },
-      { name: "description", content: "Lovable Generated Project" },
-      { name: "author", content: "Lovable" },
-      { property: "og:title", content: "Lovable App" },
-      { property: "og:description", content: "Lovable Generated Project" },
+      { title: "BotForge — Build Telegram bots with AI" },
+      {
+        name: "description",
+        content:
+          "Describe your Telegram bot in plain language. BotForge generates it, connects your BotFather token, deploys it, and manages commands, automations and analytics.",
+      },
+      { name: "author", content: "BotForge" },
+      { property: "og:site_name", content: "BotForge" },
+      { property: "og:title", content: "BotForge — Build Telegram bots with AI" },
+      {
+        property: "og:description",
+        content:
+          "Describe your Telegram bot in plain language and BotForge builds, deploys and manages it.",
+      },
       { property: "og:type", content: "website" },
+      { property: "og:image", content: "/og-image.png" },
       { name: "twitter:card", content: "summary_large_image" },
-      { name: "twitter:site", content: "@Lovable" },
+      { name: "twitter:title", content: "BotForge — Build Telegram bots with AI" },
+      {
+        name: "twitter:description",
+        content:
+          "Describe your Telegram bot in plain language and BotForge builds, deploys and manages it.",
+      },
+      { name: "twitter:image", content: "/og-image.png" },
     ],
     links: [
       {
         rel: "stylesheet",
         href: appCss,
       },
+      { rel: "canonical", href: "https://botforge.app/" },
       { rel: "icon", href: "/favicon.ico", type: "image/x-icon" },
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },

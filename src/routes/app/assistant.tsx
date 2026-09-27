@@ -47,6 +47,7 @@ export const Route = createFileRoute("/app/assistant")({
         content: "Ask for Telegram bot code and get runnable snippets back, explained.",
       },
       { property: "og:type", content: "website" },
+      { name: "robots", content: "noindex, nofollow" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
@@ -90,9 +91,7 @@ function AssistantPage() {
       setSavingId(null);
       setTemplateName("");
     } catch (caught) {
-      setSaveError(
-        caught instanceof Error ? caught.message : "Could not save that as a template.",
-      );
+      setSaveError(caught instanceof Error ? caught.message : "Could not save that as a template.");
     }
   }
 

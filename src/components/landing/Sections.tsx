@@ -338,7 +338,7 @@ export function Pricing() {
 
 /* ---------------- FAQ ---------------- */
 
-const faqs = [
+export const faqs = [
   {
     q: "Do I need to write any code?",
     a: "No. You describe the bot and BotForge generates the full project. You can still open and edit the generated code whenever you want.",

@@ -36,6 +36,7 @@ export const Route = createFileRoute("/app/new")({
         content: "Describe a Telegram bot in plain language and let BotForge build it.",
       },
       { property: "og:type", content: "website" },
+      { name: "robots", content: "noindex, nofollow" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
