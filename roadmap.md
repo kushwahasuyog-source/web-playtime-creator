@@ -28,3 +28,9 @@
 - [x] AI Coding Assistant at /app/assistant — streaming chat that writes and debugs Telegram bot code
 - [x] Assistant → builder / templates handoff (build this bot, save as template)
 - [ ] End-to-end Telegram walkthrough verified with a real BotFather token (needs the user's token)
+## In progress — site-wide quality audit
+
+- [ ] Audit and selectively fix SEO, mobile responsiveness, accessibility, UX states, links, images, and forms
+- [ ] Add a popular Telegram command library to bot detail pages
+- [ ] Re-audit links, console errors, overflow, accessibility, and target mobile widths
+
