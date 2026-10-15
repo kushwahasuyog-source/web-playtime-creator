@@ -5,6 +5,7 @@ import { ArrowRight, MessageChatCircle, Plus } from "@untitledui/icons";
 
 import { AppShell, PageHeading, StatusPill } from "@/components/app/AppShell";
 import { listBots } from "@/lib/bots.functions";
+import { LoadingState } from "@/components/app/LoadingState";
 import { getDeviceId } from "@/lib/device";
 
 export const Route = createFileRoute("/app/")({
@@ -28,7 +29,7 @@ export const Route = createFileRoute("/app/")({
 
 function BotsPage() {
   const run = useServerFn(listBots);
-  const { data: bots, isLoading } = useQuery({
+  const { data: bots, isLoading, isError } = useQuery({
     queryKey: ["bots"],
     queryFn: async () => run({ data: { deviceId: getDeviceId() } }),
   });
@@ -51,9 +52,9 @@ function BotsPage() {
       />
 
       {isLoading ? (
-        <p className="mt-12 font-mono text-sm text-muted-foreground">Loading your bots…</p>
-      ) : !bots?.length ? (
-        <div className="mt-12 rounded-3xl border border-border bg-panel p-12 text-center">
+        <LoadingState label="Loading your bots…" />
+      ) : isError ? <p role="alert" className="mt-8 text-destructive">Could not load your bots. Please refresh to try again.</p> : !bots?.length ? (
+        <div className="mt-12 rounded-3xl border border-border bg-panel p-6 sm:p-12 text-center">
           <MessageChatCircle className="mx-auto size-8 text-accent" />
           <h2 className="mt-5 text-xl font-semibold">No bots yet</h2>
           <p className="mx-auto mt-2 max-w-sm text-sm text-muted-foreground">
@@ -79,8 +80,8 @@ function BotsPage() {
                 params={{ botId: bot.id }}
                 className="rounded-2xl border border-border bg-panel p-6 transition-colors hover:border-accent/40"
               >
-                <div className="flex items-start justify-between gap-3">
-                  <h2 className="text-base font-semibold">{bot.name}</h2>
+                <div className="grid grid-cols-[minmax(0,1fr)_auto] items-start gap-3">
+                  <h2 className="min-w-0 text-base font-semibold">{bot.name}</h2>
                   <StatusPill status={bot.status} />
                 </div>
                 <p className="mt-2 line-clamp-2 text-sm text-muted-foreground">

@@ -21,7 +21,7 @@ export const Route = createFileRoute("/api/public/telegram/webhook/$botId")({
           return new Response("Not configured", { status: 500 });
         }
         const provided = request.headers.get("X-Telegram-Bot-Api-Secret-Token") ?? "";
-        if (!safeEqual(provided, expected)) {
+        if (!(await safeEqual(provided, expected))) {
           return new Response("Unauthorized", { status: 401 });
         }
 
@@ -66,7 +66,7 @@ export const Route = createFileRoute("/api/public/telegram/webhook/$botId")({
 
         let reply = "";
         const commandName = text.startsWith("/")
-          ? (text.split(/\s+/)[0] ?? "").toLowerCase()
+          ? (text.split(/\s+/)[0] ?? "").split("@")[0]?.toLowerCase()
           : null;
 
         if (commandName) {

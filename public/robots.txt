@@ -16,4 +16,4 @@ User-agent: *
 Allow: /
 Disallow: /app
 
-Sitemap: https://botforge.app/sitemap.xml
+Sitemap: https://web-playtime-creator.lovable.app/sitemap.xml

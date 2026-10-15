@@ -1,13 +1,14 @@
 import { Menu01, MessageSmileCircle, XClose } from "@untitledui/icons";
 import { useState } from "react";
+import { Button } from "@/components/ui/button";
 import { ActionLink } from "./primitives";
 
 const links = [
-  { label: "How it works", href: "#how" },
-  { label: "Builder", href: "#builder" },
-  { label: "Features", href: "#features" },
-  { label: "Templates", href: "#templates" },
-  { label: "Pricing", href: "#pricing" },
+  { label: "How it works", href: "/#how" },
+  { label: "Builder", href: "/#builder" },
+  { label: "Features", href: "/#features" },
+  { label: "Templates", href: "/#templates" },
+  { label: "Pricing", href: "/#pricing" },
 ];
 
 export function Nav() {
@@ -16,7 +17,7 @@ export function Nav() {
   return (
     <header className="sticky top-0 z-50 border-b border-border bg-background/80 backdrop-blur-xl">
       <div className="mx-auto flex h-16 w-full max-w-6xl items-center justify-between px-6 md:px-10">
-        <a href="#top" className="flex items-center gap-2.5">
+        <a href="/" className="flex items-center gap-2.5">
           <span className="flex size-8 items-center justify-center rounded-lg bg-primary text-primary-foreground">
             <MessageSmileCircle className="size-4.5" />
           </span>
@@ -45,7 +46,7 @@ export function Nav() {
           <ActionLink href="/app" className="hidden px-4 py-2 md:inline-flex">
             Create your bot
           </ActionLink>
-          <button
+          <Button
             type="button"
             onClick={() => setOpen((v) => !v)}
             aria-expanded={open}
@@ -53,7 +54,7 @@ export function Nav() {
             className="inline-flex size-10 items-center justify-center rounded-lg border border-border bg-surface text-foreground md:hidden"
           >
             {open ? <XClose className="size-5" /> : <Menu01 className="size-5" />}
-          </button>
+          </Button>
         </div>
       </div>
 

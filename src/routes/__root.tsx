@@ -11,6 +11,7 @@ import { useEffect, type ReactNode } from "react";
 
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
+import { SiteTools } from "@/components/SiteTools";
 
 function useNoindexTitle(title: string) {
   useEffect(() => {
@@ -120,7 +121,6 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
           "Describe your Telegram bot in plain language and BotForge builds, deploys and manages it.",
       },
       { property: "og:type", content: "website" },
-      { property: "og:image", content: "/og-image.png" },
       { name: "twitter:card", content: "summary_large_image" },
       { name: "twitter:title", content: "BotForge — Build Telegram bots with AI" },
       {
@@ -128,14 +128,12 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         content:
           "Describe your Telegram bot in plain language and BotForge builds, deploys and manages it.",
       },
-      { name: "twitter:image", content: "/og-image.png" },
     ],
     links: [
       {
         rel: "stylesheet",
         href: appCss,
       },
-      { rel: "canonical", href: "https://botforge.app/" },
       { rel: "icon", href: "/favicon.ico", type: "image/x-icon" },
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
@@ -158,7 +156,9 @@ function RootShell({ children }: { children: ReactNode }) {
         <HeadContent />
       </head>
       <body>
+        <a href="#main-content" className="skip-link">Skip to content</a>
         {children}
+        <SiteTools />
         <Scripts />
       </body>
     </html>

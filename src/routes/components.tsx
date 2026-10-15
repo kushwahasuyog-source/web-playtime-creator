@@ -37,7 +37,7 @@ function BlocksPage() {
   return (
     <div className="min-h-screen bg-background pb-40">
       <Nav />
-      <main>
+      <main id="main-content" tabIndex={-1}>
         <Section id="countdown">
           <SectionHeading
             eyebrow="Countdown"

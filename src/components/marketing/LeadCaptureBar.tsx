@@ -1,11 +1,12 @@
 import { useState, type FormEvent } from "react";
 import { ChevronDown, Send01, X } from "@untitledui/icons";
+import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
 export function LeadCaptureBar({
   teaser = "Get the BotForge launch playbook.",
   teaserSub = "Growth tactics for Telegram bots, once a month.",
-  successMessage = "You're on the list — check your inbox.",
+  successMessage = "Demo submitted. No subscription or email has been sent.",
   className,
 }: {
   teaser?: string;
@@ -22,14 +23,14 @@ export function LeadCaptureBar({
 
   const submit = (e: FormEvent) => {
     e.preventDefault();
-    if (email.includes("@")) setSent(true);
+    if (/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) setSent(true);
   };
 
   return (
     <div className={cn("fixed inset-x-0 bottom-0 z-50 px-4 pb-4", className)}>
       <div className="mx-auto max-w-3xl overflow-hidden rounded-2xl border border-border bg-surface/80 shadow-panel backdrop-blur-xl">
         {/* Collapsed teaser / toggle */}
-        <button
+        <Button
           type="button"
           onClick={() => setOpen((o) => !o)}
           aria-expanded={open}
@@ -47,7 +48,7 @@ export function LeadCaptureBar({
             )}
             aria-hidden
           />
-        </button>
+        </Button>
 
         {/* Expanded form — grid-rows slide */}
         <div
@@ -56,10 +57,10 @@ export function LeadCaptureBar({
             open ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0",
           )}
         >
-          <div className="overflow-hidden">
+          <div className="overflow-hidden" inert={!open}>
             <div className="flex items-start gap-3 border-t border-border px-5 py-4">
               {sent ? (
-                <p className="flex-1 py-2 text-sm text-accent">{successMessage}</p>
+                <p role="status" className="flex-1 py-2 text-sm text-accent">{successMessage}</p>
               ) : (
                 <form onSubmit={submit} className="flex flex-1 flex-col gap-3 sm:flex-row">
                   <input
@@ -67,27 +68,27 @@ export function LeadCaptureBar({
                     required
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    placeholder="you@company.com"
+                    placeholder="Email address"
                     aria-label="Email address"
                     className="h-10 min-w-0 flex-1 rounded-xl border border-input bg-background/60 px-3.5 text-sm outline-none placeholder:text-muted-foreground focus:border-accent/60"
                   />
-                  <button
+                  <Button
                     type="submit"
                     className="inline-flex h-10 shrink-0 items-center justify-center gap-2 rounded-xl bg-accent px-4 text-sm font-semibold text-accent-foreground transition-[filter] hover:brightness-110 ring-soft"
                   >
                     <Send01 className="size-4" />
                     Subscribe
-                  </button>
+                  </Button>
                 </form>
               )}
-              <button
+              <Button
                 type="button"
                 onClick={() => setDismissed(true)}
                 aria-label="Dismiss"
                 className="shrink-0 rounded-lg p-1.5 text-muted-foreground transition-colors hover:text-foreground"
               >
                 <X className="size-4" />
-              </button>
+              </Button>
             </div>
           </div>
         </div>

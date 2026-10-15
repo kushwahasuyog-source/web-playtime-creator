@@ -13,6 +13,7 @@ import {
   Zap,
 } from "@untitledui/icons";
 import { ActionLink, Card, Section, SectionHeading, StatusDot } from "./primitives";
+import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from "@/components/ui/accordion";
 
 /* ---------------- How it works ---------------- */
 
@@ -361,14 +362,15 @@ export function Faq() {
   return (
     <Section id="faq">
       <SectionHeading eyebrow="FAQ" title="Questions, answered" />
-      <div className="mt-12 grid gap-4 md:grid-cols-2">
+      <Accordion type="multiple" className="mt-12 grid gap-4 md:grid-cols-2">
         {faqs.map((f) => (
-          <Card key={f.q}>
-            <h3 className="text-base font-semibold">{f.q}</h3>
-            <p className="mt-3 text-sm leading-relaxed text-muted-foreground">{f.a}</p>
-          </Card>
+          <AccordionItem value={f.q} key={f.q} className="rounded-lg border border-border bg-panel px-6">
+            <AccordionTrigger className="text-base font-semibold">{f.q}</AccordionTrigger>
+            <AccordionContent className="text-sm leading-relaxed text-muted-foreground">{f.a}</AccordionContent>
+          </AccordionItem>
         ))}
-      </div>
+      </Accordion>
+      <p className="mt-5 text-xs text-muted-foreground">Last reviewed <time dateTime="2026-10-15">15 October 2026</time></p>
     </Section>
   );
 }
@@ -400,9 +402,9 @@ export function Cta() {
 }
 
 const footerCols = [
-  { title: "Product", links: ["Features", "Templates", "Automations", "Pricing"] },
-  { title: "Developers", links: ["Documentation", "API reference", "Changelog", "Status"] },
-  { title: "Company", links: ["Blog", "Contact", "Privacy", "Terms"] },
+  { title: "Product", links: [{ label: "Features", href: "/#features" }, { label: "Templates", href: "/app/templates" }, { label: "AI builder", href: "/app/new" }, { label: "Pricing", href: "/#pricing" }] },
+  { title: "Developers", links: [{ label: "Coding assistant", href: "/app/assistant" }, { label: "Telegram Bot API", href: "https://core.telegram.org/bots/api" }, { label: "BotFather", href: "https://t.me/BotFather" }] },
+  { title: "Explore", links: [{ label: "My bots", href: "/app" }, { label: "How it works", href: "/#how" }, { label: "FAQ", href: "/#faq" }] },
 ];
 
 export function Footer() {
@@ -425,10 +427,10 @@ export function Footer() {
             <h3 className="font-mono text-xs uppercase tracking-widest text-accent">{c.title}</h3>
             <ul className="mt-4 space-y-2.5">
               {c.links.map((l) => (
-                <li key={l}>
-                  <span className="text-sm text-muted-foreground transition-colors hover:text-foreground">
-                    {l}
-                  </span>
+                <li key={l.href}>
+                  <a href={l.href} className="inline-flex min-h-11 items-center text-sm text-muted-foreground transition-colors hover:text-foreground">
+                    {l.label}
+                  </a>
                 </li>
               ))}
             </ul>

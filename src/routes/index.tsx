@@ -54,14 +54,12 @@ export const Route = createFileRoute("/")({
       { property: "og:title", content: title },
       { property: "og:description", content: description },
       { property: "og:type", content: "website" },
-      { property: "og:url", content: "https://botforge.app/" },
-      { property: "og:image", content: "/og-image.png" },
+      { property: "og:url", content: "https://web-playtime-creator.lovable.app/" },
       { name: "twitter:card", content: "summary_large_image" },
       { name: "twitter:title", content: title },
       { name: "twitter:description", content: description },
-      { name: "twitter:image", content: "/og-image.png" },
     ],
-    links: [{ rel: "canonical", href: "https://botforge.app/" }],
+    links: [{ rel: "canonical", href: "https://web-playtime-creator.lovable.app/" }],
     scripts: [
       { type: "application/ld+json", children: JSON.stringify(appJsonLd) },
       { type: "application/ld+json", children: JSON.stringify(faqJsonLd) },
@@ -74,7 +72,7 @@ function Index() {
   return (
     <div className="min-h-screen bg-background">
       <Nav />
-      <main>
+      <main id="main-content" tabIndex={-1}>
         <Hero />
         <HowItWorks />
         <BuilderDemo />

@@ -18,7 +18,7 @@ export function SingleCta({
   title = "Ship your first Telegram bot today",
   description = "Describe the bot in one sentence. BotForge writes the code, runs the tests and deploys it — you just watch it come online.",
   primaryLabel = "Start building free",
-  primaryHref = "#cta",
+  primaryHref = "/app/new",
   finePrint = "No credit card required. 500 free messages every month.",
   className,
 }: {
@@ -67,8 +67,8 @@ export function DualCta({
   eyebrow = "Ready when you are",
   title = "From prompt to production in one afternoon",
   description = "Join the builders shipping Telegram bots without writing boilerplate. Start from a template or describe your own.",
-  primary = { label: "Create your bot", href: "#cta" },
-  secondary = { label: "Browse templates", href: "#templates" },
+  primary = { label: "Create your bot", href: "/app/new" },
+  secondary = { label: "Browse templates", href: "/app/templates" },
   className,
 }: {
   eyebrow?: string;
@@ -111,7 +111,7 @@ export function InlineCta({
   title = "Need a custom integration?",
   description = "Our team wires your bot into any API or internal system.",
   actionLabel = "Talk to us",
-  actionHref = "#cta",
+  actionHref = "/app/assistant",
   className,
 }: {
   icon?: typeof Zap;

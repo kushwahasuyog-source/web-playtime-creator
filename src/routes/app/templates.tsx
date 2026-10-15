@@ -4,6 +4,7 @@ import { useServerFn } from "@tanstack/react-start";
 import { Zap } from "@untitledui/icons";
 
 import { AppShell, PageHeading } from "@/components/app/AppShell";
+import { LoadingState } from "@/components/app/LoadingState";
 import { listTemplates } from "@/lib/bots.functions";
 
 export const Route = createFileRoute("/app/templates")({
@@ -29,7 +30,7 @@ export const Route = createFileRoute("/app/templates")({
 
 function TemplatesPage() {
   const fetchTemplates = useServerFn(listTemplates);
-  const { data: templates, isLoading } = useQuery({
+  const { data: templates, isLoading, isError } = useQuery({
     queryKey: ["templates"],
     queryFn: async () => fetchTemplates({}),
   });
@@ -43,8 +44,8 @@ function TemplatesPage() {
       />
 
       {isLoading ? (
-        <p className="mt-12 font-mono text-sm text-muted-foreground">Loading templates…</p>
-      ) : (
+        <LoadingState label="Loading templates…" />
+      ) : isError ? <p role="alert" className="mt-8 text-destructive">Could not load templates. Please refresh to try again.</p> : !templates?.length ? <p className="mt-8 text-muted-foreground">No templates yet. Save a bot from the coding assistant to create one.</p> : (
         <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {templates?.map((t) => (
             <div key={t.slug} className="rounded-2xl border border-border bg-panel p-6">
