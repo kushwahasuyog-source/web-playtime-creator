@@ -8,3 +8,7 @@
 > Commits you push to the connected branch sync back to Lovable and show up in
 > the editor, so keep the branch in a working state.
 <!-- LOVABLE:END -->
+
+## Application architecture
+- Shared browser utilities live in SiteTools and mount once in the root shell to avoid duplicate search, theme, and scroll listeners.
+- Popular command definitions are shared between the library UI and validated server mutation so defaults remain consistent.
