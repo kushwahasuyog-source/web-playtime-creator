@@ -1,6 +1,7 @@
 import { createServerFn } from "@tanstack/react-start";
 import { getRequest } from "@tanstack/react-start/server";
 import { z } from "zod";
+import { commandLibrary } from "@/lib/command-library";
 
 const PROJECT_ID = "3b96688c-2ace-4b9b-af85-a07e05045582";
 
@@ -42,7 +43,7 @@ export const getBot = createServerFn({ method: "POST" })
     const { data: bot } = await db
       .from("bots")
       .select(
-        "id, name, status, prompt, spec, telegram_username, token_hint, created_at, last_activity_at",
+        "id, name, status, prompt, spec, telegram_username, token_hint, created_at, updated_at, last_activity_at",
       )
       .eq("id", data.botId)
       .eq("owner_id", data.deviceId)
@@ -64,6 +65,31 @@ export const getBot = createServerFn({ method: "POST" })
     ]);
 
     return { bot, commands: commands ?? [], messages: messages ?? [] };
+  });
+
+export const addBotCommand = createServerFn({ method: "POST" })
+  .inputValidator((input: unknown) => z.object({ deviceId, botId: z.string().uuid(), command: z.string(), reply: z.string().trim().min(1).max(4096) }).parse(input))
+  .handler(async ({ data }) => {
+    const item = commandLibrary.find(command => command.command === data.command);
+    if (!item) throw new Error("Choose a command from the library.");
+    const db = await admin();
+    const { data: bot } = await db.from("bots").select("id, status, token_cipher").eq("id", data.botId).eq("owner_id", data.deviceId).maybeSingle();
+    if (!bot) throw new Error("Bot not found.");
+    const { data: commands, error: readError } = await db.from("bot_commands").select("command, position").eq("bot_id", bot.id);
+    if (readError) throw new Error("Could not load commands.");
+    if (commands?.some(command => command.command === item.command)) return { added: false };
+    if ((commands?.length ?? 0) >= 100) throw new Error("Telegram supports up to 100 commands.");
+    const position = Math.max(-1, ...(commands ?? []).map(command => command.position)) + 1;
+    const { error } = await db.from("bot_commands").insert({ bot_id: bot.id, owner_id: data.deviceId, command: item.command, description: item.description, reply: data.reply, use_ai: "useAi" in item && item.useAi, position });
+    if (error) throw new Error("Could not save the command.");
+    await db.from("bots").update({ updated_at: new Date().toISOString() }).eq("id", bot.id);
+    if (bot.status === "live" && bot.token_cipher) {
+      const { decryptToken } = await import("@/lib/botCrypto.server");
+      const { setMyCommands } = await import("@/lib/telegram.server");
+      const { data: all } = await db.from("bot_commands").select("command, description").eq("bot_id", bot.id).order("position");
+      await setMyCommands(decryptToken(bot.token_cipher), (all ?? []).map(command => ({ command: command.command.replace(/^\//, ""), description: command.description.slice(0, 256) })));
+    }
+    return { added: true };
   });
 
 /** All bot templates. */
