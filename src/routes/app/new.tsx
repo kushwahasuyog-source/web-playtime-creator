@@ -7,6 +7,7 @@ import { useEffect, useState } from "react";
 import { AppShell, PageHeading } from "@/components/app/AppShell";
 import { generateBot, listTemplates } from "@/lib/bots.functions";
 import { getDeviceId } from "@/lib/device";
+import { Button } from "@/components/ui/button";
 import { takeHandoff } from "@/lib/handoff";
 
 const stages = [
@@ -81,6 +82,7 @@ function NewBotPage() {
   }, [busy]);
 
   async function build() {
+    if (prompt.trim().length < 10 || prompt.length > 12000) { setError("Describe your bot in 10–12,000 characters."); return; }
     setBusy(true);
     setStage(0);
     setError(null);
@@ -95,7 +97,7 @@ function NewBotPage() {
       navigate({ to: "/app/bots/$botId", params: { botId: result.botId } });
     } catch (caught) {
       setError(
-        caught instanceof Error ? caught.message : "The builder could not finish. Try again.",
+        "The builder could not finish. Please try again.",
       );
       setBusy(false);
     }
@@ -116,16 +118,20 @@ function NewBotPage() {
               Brought over from the coding assistant — edit anything before building.
             </p>
           ) : null}
+          <label htmlFor="bot-prompt" className="mb-2 block text-sm font-medium">Bot description</label>
           <textarea
+            id="bot-prompt"
+            maxLength={12000}
+            aria-invalid={Boolean(error)}
             value={prompt}
             onChange={(e) => setPrompt(e.target.value)}
             disabled={busy}
             rows={7}
-            placeholder="A Telegram bot that answers questions about my coffee shop, shares today's menu on /menu and takes orders."
+            placeholder="Describe the bot you want to build"
             className="w-full resize-none rounded-2xl border border-input bg-surface px-4 py-4 text-sm leading-relaxed outline-none focus:border-accent disabled:opacity-60"
           />
           <div className="mt-4 flex flex-wrap items-center gap-3">
-            <button
+            <Button
               type="button"
               onClick={build}
               disabled={busy || prompt.trim().length < 10}
@@ -133,12 +139,12 @@ function NewBotPage() {
             >
               <Stars02 className="size-4" />
               {busy ? "Building your bot…" : "Build my bot"}
-            </button>
+            </Button>
             <span className="font-mono text-xs text-muted-foreground">
               Takes about 20–40 seconds
             </span>
           </div>
-          {error ? <p className="mt-4 text-sm text-urgent">{error}</p> : null}
+          {error ? <p role="alert" className="mt-4 text-sm text-destructive">{error}</p> : null}
         </div>
 
         <div className="rounded-3xl border border-border bg-panel p-6">
@@ -173,7 +179,7 @@ function NewBotPage() {
               </span>
               <div className="mt-3 flex flex-wrap gap-2">
                 {templates.map((t) => (
-                  <button
+                  <Button
                     key={t.slug}
                     type="button"
                     disabled={busy}
@@ -181,7 +187,7 @@ function NewBotPage() {
                     className="rounded-lg border border-border bg-surface px-3 py-1.5 text-xs text-muted-foreground transition-colors hover:border-accent/50 hover:text-accent disabled:opacity-50"
                   >
                     {t.name}
-                  </button>
+                  </Button>
                 ))}
               </div>
             </div>

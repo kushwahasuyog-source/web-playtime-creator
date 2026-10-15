@@ -6,9 +6,11 @@ import { DefaultChatTransport } from "ai";
 import { useState } from "react";
 
 import { saveTemplate } from "@/lib/bots.functions";
+import { Button } from "@/components/ui/button";
+import { CopyButton } from "@/components/CopyButton";
 import { setHandoff } from "@/lib/handoff";
 
-import assistantMark from "@/assets/assistant-mark.png";
+import assistantMark from "@/assets/assistant-mark.webp";
 import { AppShell, PageHeading } from "@/components/app/AppShell";
 import {
   Conversation,
@@ -91,7 +93,7 @@ function AssistantPage() {
       setSavingId(null);
       setTemplateName("");
     } catch (caught) {
-      setSaveError(caught instanceof Error ? caught.message : "Could not save that as a template.");
+      setSaveError("Could not save that as a template. Please try again.");
     }
   }
 
@@ -111,7 +113,7 @@ function AssistantPage() {
       />
 
       <div className="mt-8 grid gap-6 lg:grid-cols-[1fr_260px]">
-        <div className="flex h-[62vh] min-h-[420px] flex-col rounded-3xl border border-border bg-panel">
+        <div className="flex min-w-0 h-[62vh] min-h-[420px] flex-col rounded-3xl border border-border bg-panel">
           <Conversation className="flex-1">
             <ConversationContent className="gap-6">
               {messages.length === 0 ? (
@@ -120,8 +122,8 @@ function AssistantPage() {
                     src={assistantMark}
                     alt=""
                     loading="lazy"
-                    width={816}
-                    height={816}
+                    width={128}
+                    height={128}
                     className="size-16"
                   />
                   <div>
@@ -157,14 +159,14 @@ function AssistantPage() {
                   {message.role === "assistant" && !busy && textOf(message) ? (
                     <div className="mt-3 space-y-2">
                       <div className="flex flex-wrap items-center gap-2">
-                        <button
+                        <Button
                           type="button"
                           onClick={() => buildFrom(message)}
                           className="inline-flex items-center gap-2 rounded-lg bg-accent px-3 py-1.5 text-xs font-semibold text-accent-foreground transition-all hover:brightness-110"
                         >
                           <Stars02 className="size-3.5" /> Build this bot
-                        </button>
-                        <button
+                        </Button>
+                        <Button
                           type="button"
                           onClick={() => {
                             setSavedId(null);
@@ -174,7 +176,7 @@ function AssistantPage() {
                           className="inline-flex items-center gap-2 rounded-lg border border-border bg-surface px-3 py-1.5 text-xs font-medium text-muted-foreground transition-colors hover:border-accent/50 hover:text-accent"
                         >
                           <Save01 className="size-3.5" /> Save as template
-                        </button>
+                        </Button>
                         {savedId === message.id ? (
                           <span className="inline-flex items-center gap-1.5 font-mono text-xs text-accent">
                             <Check className="size-3.5" /> Saved to templates
@@ -185,19 +187,21 @@ function AssistantPage() {
                       {savingId === message.id ? (
                         <div className="flex flex-wrap items-center gap-2">
                           <input
+                            aria-label="Template name"
+                            maxLength={80}
                             value={templateName}
                             onChange={(e) => setTemplateName(e.target.value)}
-                            placeholder="Template name, e.g. Pizza order bot"
-                            className="w-64 rounded-lg border border-input bg-surface px-3 py-1.5 text-xs outline-none focus:border-accent"
+                            placeholder="Template name"
+                            className="w-full sm:w-64 rounded-lg border border-input bg-surface px-3 py-1.5 text-xs outline-none focus:border-accent"
                           />
-                          <button
+                          <Button
                             type="button"
                             disabled={templateName.trim().length < 2}
                             onClick={() => void saveAsTemplate(message)}
                             className="rounded-lg bg-accent px-3 py-1.5 text-xs font-semibold text-accent-foreground disabled:opacity-50"
                           >
                             Save
-                          </button>
+                          </Button>
                         </div>
                       ) : null}
 
@@ -230,9 +234,10 @@ function AssistantPage() {
               }}
             >
               <PromptInputTextarea
+                aria-label="Message to coding assistant"
                 value={input}
                 onChange={(e) => setInput(e.currentTarget.value)}
-                placeholder="e.g. Write a Telegram bot that takes pizza orders and confirms them."
+                placeholder="Ask for Telegram bot code"
               />
               <PromptInputFooter className="justify-end">
                 <PromptInputSubmit
@@ -251,7 +256,7 @@ function AssistantPage() {
           </span>
           <div className="mt-4 space-y-2">
             {starters.map((s) => (
-              <button
+              <Button
                 key={s}
                 type="button"
                 disabled={busy}
@@ -259,7 +264,7 @@ function AssistantPage() {
                 className="w-full rounded-xl border border-border bg-surface px-3 py-2.5 text-left text-xs leading-relaxed text-muted-foreground transition-colors hover:border-accent/50 hover:text-accent disabled:opacity-50"
               >
                 {s}
-              </button>
+              </Button>
             ))}
           </div>
           <p className="mt-5 border-t border-border pt-4 text-xs text-muted-foreground">
