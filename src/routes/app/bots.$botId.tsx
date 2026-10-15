@@ -1,11 +1,16 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
-import { ArrowLeft, Key01, MessageChatCircle, Zap } from "@untitledui/icons";
+import { ArrowLeft, Key01, MessageChatCircle, Zap, Eye, EyeOff } from "@untitledui/icons";
 import { useState } from "react";
 
 import { AppShell, StatusPill } from "@/components/app/AppShell";
 import { connectToken, getBot, setBotLive } from "@/lib/bots.functions";
+import { Button } from "@/components/ui/button";
+import { CopyButton } from "@/components/CopyButton";
+import { CommandLibrary } from "@/components/app/CommandLibrary";
+import { LoadingState } from "@/components/app/LoadingState";
+import { AlertDialog, AlertDialogContent, AlertDialogTitle, AlertDialogDescription, AlertDialogAction, AlertDialogCancel, AlertDialogFooter } from "@/components/ui/alert-dialog";
 import { getDeviceId } from "@/lib/device";
 
 export const Route = createFileRoute("/app/bots/$botId")({
@@ -38,6 +43,9 @@ function BotDetailPage() {
   const runLive = useServerFn(setBotLive);
 
   const [token, setToken] = useState("");
+  const [visible, setVisible] = useState(false);
+  const [confirmPause, setConfirmPause] = useState(false);
+  const [success, setSuccess] = useState("");
   const [error, setError] = useState<string | null>(null);
 
   const botQuery = useQuery({
@@ -50,11 +58,12 @@ function BotDetailPage() {
     mutationFn: async () => runConnect({ data: { deviceId: getDeviceId(), botId, token } }),
     onSuccess: () => {
       setToken("");
+      setSuccess("Telegram token connected.");
       setError(null);
       queryClient.invalidateQueries({ queryKey: ["bot", botId] });
     },
     onError: (caught) =>
-      setError(caught instanceof Error ? caught.message : "That token was rejected by Telegram."),
+      setError("Could not connect that token. Check the BotFather token and try again."),
   });
 
   const liveMutation = useMutation({
@@ -65,7 +74,7 @@ function BotDetailPage() {
       queryClient.invalidateQueries({ queryKey: ["bot", botId] });
     },
     onError: (caught) =>
-      setError(caught instanceof Error ? caught.message : "Could not change the bot status."),
+      setError("Could not change the bot status. Please try again."),
   });
 
   const bot = botQuery.data?.bot;
@@ -89,15 +98,15 @@ function BotDetailPage() {
       </Link>
 
       {botQuery.isLoading ? (
-        <p className="mt-8 font-mono text-sm text-muted-foreground">Loading bot…</p>
+        <LoadingState label="Loading bot…" />
       ) : !bot ? (
         <p className="mt-8 text-sm text-muted-foreground">This bot no longer exists.</p>
       ) : (
         <>
-          <div className="mt-6 flex flex-wrap items-start justify-between gap-4">
+          <div className="mt-6 grid grid-cols-[minmax(0,1fr)_auto] items-start gap-4 sm:flex sm:flex-wrap sm:justify-between">
             <div>
-              <div className="flex items-center gap-3">
-                <h1 className="text-3xl font-semibold tracking-tight">{bot.name}</h1>
+              <div className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-3">
+                <h1 className="min-w-0 text-2xl sm:text-3xl font-semibold tracking-tight">{bot.name}</h1>
                 <StatusPill status={bot.status} />
               </div>
               <p className="mt-2 max-w-xl text-sm text-muted-foreground">
@@ -115,10 +124,10 @@ function BotDetailPage() {
               ) : null}
             </div>
 
-            <button
+            <Button
               type="button"
               disabled={liveMutation.isPending || !bot.telegram_username}
-              onClick={() => liveMutation.mutate(!isLive)}
+              onClick={() => isLive ? setConfirmPause(true) : liveMutation.mutate(true)}
               className={
                 isLive
                   ? "inline-flex items-center gap-2 rounded-xl border border-border bg-surface px-5 py-3 text-sm font-semibold transition-colors hover:border-accent/50 disabled:opacity-50"
@@ -127,10 +136,12 @@ function BotDetailPage() {
             >
               <Zap className="size-4" />
               {liveMutation.isPending ? "Working…" : isLive ? "Switch off" : "Go live"}
-            </button>
+            </Button>
           </div>
 
-          {error ? <p className="mt-4 text-sm text-urgent">{error}</p> : null}
+          {error ? <p role="alert" className="mt-4 text-sm text-destructive">{error}</p> : null}
+          {success && <p role="status" className="mt-4 text-sm text-accent">{success}</p>}
+          <p className="mt-3 text-xs text-muted-foreground">Last updated <time dateTime={bot.updated_at}>{new Date(bot.updated_at).toLocaleDateString()}</time></p>
 
           <div className="mt-10 grid gap-6 lg:grid-cols-[1fr_0.8fr]">
             <div className="space-y-6">
@@ -143,6 +154,7 @@ function BotDetailPage() {
                     <div key={c.id} className="rounded-xl border border-border bg-surface/60 p-4">
                       <div className="flex items-center justify-between gap-3">
                         <p className="font-mono text-sm text-accent">{c.command}</p>
+                         <CopyButton text={[c.command, c.reply].filter(Boolean).join("\n")} label={`Copy ${c.command}`} />
                         {c.use_ai ? (
                           <span className="rounded-full border border-accent/40 px-2 py-0.5 font-mono text-[10px] uppercase tracking-widest text-accent">
                             AI
@@ -161,6 +173,7 @@ function BotDetailPage() {
                     <p className="text-sm text-muted-foreground">No commands generated.</p>
                   ) : null}
                 </div>
+                <div className="mt-6"><CommandLibrary botId={botId} existing={commands.map(command => command.command)} /></div>
               </section>
 
               <section className="rounded-3xl border border-border bg-panel p-6">
@@ -204,20 +217,28 @@ function BotDetailPage() {
                     Create a bot with @BotFather on Telegram and paste the token it gives you.
                   </p>
                 )}
+                <label htmlFor="telegram-token" className="mt-4 block text-sm font-medium">BotFather token</label>
+                <div className="relative">
                 <input
+                  id="telegram-token"
+                  type={visible ? "text" : "password"}
+                  autoComplete="off"
+                  spellCheck={false}
                   value={token}
                   onChange={(e) => setToken(e.target.value)}
-                  placeholder="1234567890:AA…"
-                  className="mt-4 w-full rounded-xl border border-input bg-surface px-4 py-3 font-mono text-sm outline-none focus:border-accent"
+                  placeholder="Paste your BotFather token"
+                  className="mt-4 w-full rounded-xl border border-input bg-surface pl-4 pr-14 py-3 font-mono text-sm outline-none focus:border-accent"
                 />
-                <button
+                <Button type="button" size="icon" variant="ghost" className="absolute right-1 top-4" aria-label={visible ? "Hide token" : "Show token"} onClick={() => setVisible(!visible)}>{visible ? <EyeOff /> : <Eye />}</Button>
+                </div>
+                <Button
                   type="button"
                   disabled={connectMutation.isPending || token.trim().length < 20}
                   onClick={() => connectMutation.mutate()}
                   className="mt-3 w-full rounded-xl bg-accent px-5 py-3 text-sm font-semibold text-accent-foreground ring-soft transition-all hover:brightness-110 disabled:opacity-50"
                 >
                   {connectMutation.isPending ? "Verifying…" : "Connect token"}
-                </button>
+                </Button>
                 <p className="mt-3 font-mono text-[11px] text-muted-foreground">
                   Stored encrypted. Never sent back to the browser.
                 </p>
@@ -243,6 +264,9 @@ function BotDetailPage() {
           </div>
         </>
       )}
+      <AlertDialog open={confirmPause} onOpenChange={setConfirmPause}>
+        <AlertDialogContent><AlertDialogTitle>Switch this bot off?</AlertDialogTitle><AlertDialogDescription>It will stop answering Telegram messages until you switch it live again. Your commands and messages are kept.</AlertDialogDescription><AlertDialogFooter><AlertDialogCancel>Keep live</AlertDialogCancel><AlertDialogAction onClick={() => liveMutation.mutate(false)}>Switch off</AlertDialogAction></AlertDialogFooter></AlertDialogContent>
+      </AlertDialog>
     </AppShell>
   );
 }
