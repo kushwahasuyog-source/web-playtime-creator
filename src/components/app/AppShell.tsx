@@ -46,20 +46,20 @@ export function AppShell({ children }: { children: ReactNode }) {
         </div>
       </header>
 
-      <div className="flex gap-2 border-b border-border px-6 py-3 md:hidden">
+      <nav aria-label="App navigation" className="flex max-w-full gap-2 overflow-x-auto border-b border-border px-4 py-3 md:hidden">
         {nav.map((item) => (
           <Link
             key={item.to}
             to={item.to}
             activeOptions={{ exact: item.to === "/app" }}
-            className="rounded-lg px-3 py-1.5 text-xs text-muted-foreground data-[status=active]:bg-surface data-[status=active]:text-accent"
+            className="inline-flex min-h-11 shrink-0 items-center rounded-lg px-3 py-1.5 text-xs text-muted-foreground data-[status=active]:bg-surface data-[status=active]:text-accent"
           >
             {item.label}
           </Link>
         ))}
-      </div>
+      </nav>
 
-      <main className="mx-auto w-full max-w-6xl px-6 py-10 md:px-10">{children}</main>
+      <main id="main-content" tabIndex={-1} className="mx-auto w-full min-w-0 max-w-6xl px-4 py-8 sm:px-6 md:px-10">{children}</main>
     </div>
   );
 }
@@ -76,8 +76,8 @@ export function PageHeading({
   action?: ReactNode;
 }) {
   return (
-    <div className="flex flex-wrap items-end justify-between gap-4">
-      <div>
+    <div className="grid grid-cols-[minmax(0,1fr)_auto] items-end gap-4 sm:flex sm:flex-wrap sm:justify-between">
+      <div className="min-w-0">
         {eyebrow ? (
           <span className="font-mono text-xs uppercase tracking-[0.18em] text-accent">
             {eyebrow}
