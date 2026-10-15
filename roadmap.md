@@ -34,3 +34,7 @@
 - [ ] Add a popular Telegram command library to bot detail pages
 - [ ] Re-audit links, console errors, overflow, accessibility, and target mobile widths
 
+
+## Audience growth
+
+- [ ] Review audience, competitors, discovery channels, and visitor journey; recommend the first growth action
